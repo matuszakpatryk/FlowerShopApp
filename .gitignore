@@ -269,3 +269,4 @@ __pycache__/
 
 #appsetting
 appsettings.json
+Flower/Flower/appsettings.Development.json

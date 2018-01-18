@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <p>Niezalogowany!</p>
+}
+else
+{
+    <p>Zalogowany!</p>
+}
