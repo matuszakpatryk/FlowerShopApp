@@ -7,7 +7,7 @@ namespace Flower.Extensions.Helpers
 {
     public static class RoleHelper
     {
-        public const string Administrator = "Administrator";
+        public const string Admin = "Admin";
         public const string Employee = "Employee";
         public const string User = "User";
 

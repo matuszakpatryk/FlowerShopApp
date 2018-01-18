@@ -1,20 +1,27 @@
-﻿@model IEnumerable<Flower.Models.Purchase>
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@model IEnumerable<Flower.Models.Purchase>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Purchases";
 }
 
-<h2>Index</h2>
+<h2>Purchases</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded ||
+   (await AuthorizationService.AuthorizeAsync(User, "Employee")).Succeeded)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success btn-sm">Create New</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.PurchaseDate)
-                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PurchaseDate)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Customer)
             </th>
@@ -28,7 +35,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.PurchaseDate)
@@ -42,12 +50,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Seller.City)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PurchaseID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PurchaseID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PurchaseID">Delete</a>
-            </td>
+            @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded ||
+                  (await AuthorizationService.AuthorizeAsync(User, "Employee")).Succeeded)
+            {
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PurchaseID" class="btn btn-success btn-sm">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.PurchaseID" class="btn btn-success btn-sm">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.PurchaseID" class="btn btn-success btn-sm">Delete</a>
+                </td>
+            }
         </tr>
-}
+        }
     </tbody>
 </table>

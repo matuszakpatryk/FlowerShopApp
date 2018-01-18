@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Flower.Controllers
 {
-    [Authorize(Roles = "Admin, Employee")]
+    [Authorize(Roles = "Admin, Employee, User")]
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,9 +22,19 @@ namespace Flower.Controllers
         }
 
         // GET: Customer
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Customer.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+
+            var customers = from c in _context.Customer select c;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(c => c.Name.Contains(searchString)
+                                       || c.Surname.Contains(searchString) || c.Email.Contains(searchString)
+                                       || c.Phone.Contains(searchString) || c.Country.Contains(searchString)
+                                       || c.City.Contains(searchString));
+            }
+            return View(await customers.AsNoTracking().ToListAsync());
         }
 
         // GET: Customer/Details/5
@@ -56,7 +66,7 @@ namespace Flower.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerID,Name,Surname,Phone,Country,City")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerID,Name,Surname,Phone,Email,Country,City")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +98,7 @@ namespace Flower.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerID,Name,Surname,Phone,Country,City")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerID,Name,Surname,Phone,Email,Country,City")] Customer customer)
         {
             if (id != customer.CustomerID)
             {

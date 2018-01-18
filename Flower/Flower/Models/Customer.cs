@@ -26,10 +26,16 @@ namespace Flower.Models
         [PhoneCheck]
         [Required(ErrorMessage = "Enter Phone")]
         public string Phone { get; set; }
+
+        [Required(ErrorMessage = "Enter Email")]
+        public string Email { get; set; }
+
         [Required(ErrorMessage = "Enter Country Name")]
         public string Country { get; set; }
+
         [Required(ErrorMessage = "Enter City Name")]
         public string City { get; set; }
+
         [Display(Name = "Purchases")]
         public ICollection<Purchase> Purchases { get; set; }
 

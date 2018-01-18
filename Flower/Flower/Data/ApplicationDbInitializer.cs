@@ -30,7 +30,7 @@ namespace Flower.Data
             {
                 var roleNames = new[]
                 {
-                    RoleHelper.Administrator,
+                    RoleHelper.Admin,
                     RoleHelper.Employee,
                     RoleHelper.User
                 };

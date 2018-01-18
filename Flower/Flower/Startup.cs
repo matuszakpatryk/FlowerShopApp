@@ -37,7 +37,22 @@ namespace Flower
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddScoped<ApplicationDbInitializer>();
+            services.AddAuthorization(options =>
+            {
+
+                options.AddPolicy("Admin",
+                    authBuilder =>
+                    {
+                        authBuilder.RequireRole("Admin");
+                    });
+
+                options.AddPolicy("Employee",
+                    authBuilder =>
+                    {
+                        authBuilder.RequireRole("Employee");
+                    });
+
+            });
 
             services.AddMvc();
         }

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Flower.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Employee")]
     public class SellerController : Controller
     {
         private readonly ApplicationDbContext _context;

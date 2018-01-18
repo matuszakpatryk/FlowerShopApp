@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Flower.Controllers
 {
-    [Authorize(Roles = "Admin, Employee, User")]
+    [AllowAnonymous]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -46,7 +46,6 @@ namespace Flower.Controllers
         }
 
         // GET: Product/Create
-        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -69,7 +68,6 @@ namespace Flower.Controllers
         }
 
         // GET: Product/Edit/5
-        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,7 +88,6 @@ namespace Flower.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> Edit(int id, [Bind("ProductID,Name,Price,Quantity")] Product product)
         {
             if (id != product.ProductID)
@@ -140,7 +137,6 @@ namespace Flower.Controllers
         }
 
         // POST: Product/Delete/5
-        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
