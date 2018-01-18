@@ -27,6 +27,7 @@ namespace Flower.Models
         [Required(ErrorMessage = "Enter Phone")]
         public string Phone { get; set; }
 
+        [Email]
         [Required(ErrorMessage = "Enter Email")]
         public string Email { get; set; }
 
