@@ -3,12 +3,21 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@model string
 
 @if (!SignInManager.IsSignedIn(User))
 {
-    <p>Niezalogowany!</p>
+    <center>
+        <h2>Welcome stranger!</h2>
+        <p><b>Please log in, if you want access all features of my amazing app!</b></p>
+    </center>
 }
 else
 {
-    <p>Zalogowany!</p>
+    <center>
+        <h2>Hurra!</h2>
+        <p><b>Logged as @Model!</b></p>
+        <p>Now you can enjoy using my amazing app!</p>
+    </center>
+    
 }

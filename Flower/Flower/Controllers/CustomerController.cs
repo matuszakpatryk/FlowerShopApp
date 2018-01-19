@@ -153,8 +153,15 @@ namespace Flower.Controllers
         {
             var customer = await _context.Customer.SingleOrDefaultAsync(m => m.CustomerID == id);
             _context.Customer.Remove(customer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            } catch (Exception e)
+            {
+                return View(customer);
+            }
+            
         }
 
         private bool CustomerExists(int id)

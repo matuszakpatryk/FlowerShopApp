@@ -42,13 +42,13 @@
                 @Html.DisplayFor(modelItem => item.PurchaseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.City)
+                @Html.DisplayFor(modelItem => item.Customer.FullName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Product.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Seller.City)
+                @Html.DisplayFor(modelItem => item.Seller.FullName)
             </td>
             @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded ||
                   (await AuthorizationService.AuthorizeAsync(User, "Employee")).Succeeded)

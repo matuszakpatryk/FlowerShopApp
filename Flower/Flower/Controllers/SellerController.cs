@@ -143,8 +143,15 @@ namespace Flower.Controllers
         {
             var seller = await _context.Seller.SingleOrDefaultAsync(m => m.SellerID == id);
             _context.Seller.Remove(seller);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                return View(seller);
+            }
         }
 
         private bool SellerExists(int id)

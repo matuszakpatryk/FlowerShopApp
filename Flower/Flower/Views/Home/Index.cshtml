@@ -1,4 +1,10 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using Flower.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
     ViewData["Title"] = "Home page";
 }
 
@@ -14,7 +20,7 @@
             <div class="carousel-caption" role="option">
                 <p>
                     Do you want to know how to arrange a beautiful floral composition?</br> Floristic workshops are for you!</br>
-                    <a class="btn btn-default" href="https://fidytek.pl">
+                    <a class="btn btn-default" href="http://google.pl">
                         Check it!
                     </a>
                 </p>
@@ -25,7 +31,7 @@
             <div class="carousel-caption" role="option">
                 <p>
                     Boring, autumn evenings? Spend them creatively!</br> Sign up for the flower arranging course!</br>
-                    <a class="btn btn-default" href="https://www.youtube.com/watch?v=eB8O2BneE2M">
+                    <a class="btn btn-default" href="http://google.pl">
                         Check it!
                     </a>
                 </p>
@@ -36,7 +42,7 @@
             <div class="carousel-caption" role="option">
                 <p>
                     Check out our discounts and win a trip from Spain!</br>
-                    <a class="btn btn-default" href="http://www.blasty.pl/upload/images/large/2016/04/opalilam-sie-w-hiszpani-wiec-dziecko-tez-jest-ciemne.jpg">
+                    <a class="btn btn-default" href="http://google.pl">
                         Check it!
                     </a>
                 </p>
@@ -54,6 +60,6 @@
 </div>
 
 <div class="row">
-    @await Html.PartialAsync("_HomeViewPartial")
+    @await Html.PartialAsync("_HomeViewPartial", @UserManager.GetUserName(User))
     <p></br></br></br></br></br</br></br></br></p>
 </div>

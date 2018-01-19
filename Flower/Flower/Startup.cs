@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Flower.Data;
 using Flower.Models;
 using Flower.Services;
+using Microsoft.AspNetCore.Localization;
 
 namespace Flower
 {
@@ -36,6 +37,13 @@ namespace Flower
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+            });
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddAuthorization(options =>
             {

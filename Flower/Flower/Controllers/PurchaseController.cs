@@ -52,9 +52,23 @@ namespace Flower.Controllers
         // GET: Purchase/Create
         public IActionResult Create()
         {
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "City");
+            ViewData["CustomerID"] = new SelectList(
+                (from c in _context.Customer
+                 select new
+                 {
+                     c.CustomerID,
+                     FullName = c.Surname + " " + c.Name
+                 }),
+                "CustomerID", "FullName", null);
             ViewData["ProductID"] = new SelectList(_context.Product, "ProductID", "Name");
-            ViewData["SellerID"] = new SelectList(_context.Seller, "SellerID", "City");
+            ViewData["SellerID"] = new SelectList(
+                (from s in _context.Seller
+                 select new
+                 {
+                     s.SellerID,
+                     FullName = s.Surname + " " + s.Name
+                 }),
+                "SellerID", "FullName", null);
             return View();
         }
 

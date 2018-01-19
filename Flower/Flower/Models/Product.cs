@@ -14,8 +14,10 @@ namespace Flower.Models
         public int ProductID { get; set; }
         [Required(ErrorMessage = "Enter Name")]
         public string Name { get; set; }
+
         [Required(ErrorMessage = "Enter Price")]
         public decimal Price { get; set; }
+
         [Required(ErrorMessage = "Enter Quantity")]
         public int Quantity { get; set; }
     }
