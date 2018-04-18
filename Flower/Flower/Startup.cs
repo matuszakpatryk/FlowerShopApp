@@ -65,6 +65,9 @@ namespace Flower
             });
 
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<ISellerRepository, SellerRepository>();
+            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 
             services.AddMvc();
         }

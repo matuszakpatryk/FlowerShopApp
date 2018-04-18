@@ -8,15 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using Flower.Data;
 using Flower.Models;
 using Microsoft.AspNetCore.Authorization;
+using Flower.Data.Repository.Interfaces;
 
 namespace Flower.Controllers
 {
     [Authorize(Roles = "Admin, Employee, User")]
     public class CustomerController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICustomerRepository _context;
 
-        public CustomerController(ApplicationDbContext context)
+        public CustomerController(ICustomerRepository context)
         {
             _context = context;
         }
@@ -26,15 +27,15 @@ namespace Flower.Controllers
         {
             ViewData["CurrentFilter"] = searchString;
 
-            var customers = from c in _context.Customer select c;
+            var customers = await _context.GetAll();
             if (!String.IsNullOrEmpty(searchString))
             {
-                customers = customers.Where(c => c.Name.Contains(searchString)
-                                       || c.Surname.Contains(searchString) || c.Email.Contains(searchString)
-                                       || c.Phone.Contains(searchString) || c.Country.Contains(searchString)
-                                       || c.City.Contains(searchString));
+                customers = customers.Where(c => c.Name.ToUpper().Contains(searchString.ToUpper())
+                                            || c.Surname.ToUpper().Contains(searchString.ToUpper()) || c.Email.ToUpper().Contains(searchString.ToUpper())
+                                            || c.Phone.ToUpper().Contains(searchString.ToUpper()) || c.Country.ToUpper().Contains(searchString.ToUpper())
+                                            || c.City.ToUpper().Contains(searchString.ToUpper()));
             }
-            return View(await customers.AsNoTracking().ToListAsync());
+            return View(customers);
         }
 
         // GET: Customer/Details/5
@@ -45,8 +46,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customer
-                .SingleOrDefaultAsync(m => m.CustomerID == id);
+            var customer = await _context.GetById(id.ToString());
             if (customer == null)
             {
                 return NotFound();
@@ -71,7 +71,6 @@ namespace Flower.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(customer);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -85,7 +84,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customer.SingleOrDefaultAsync(m => m.CustomerID == id);
+            var customer = await _context.GetById(id.ToString());
             if (customer == null)
             {
                 return NotFound();
@@ -110,11 +109,11 @@ namespace Flower.Controllers
                 try
                 {
                     _context.Update(customer);
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.CustomerID))
+                    bool temp = await CustomerExists(customer.CustomerID);
+                    if (!temp)
                     {
                         return NotFound();
                     }
@@ -136,8 +135,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customer
-                .SingleOrDefaultAsync(m => m.CustomerID == id);
+            var customer = await _context.GetById(id.ToString());
             if (customer == null)
             {
                 return NotFound();
@@ -151,11 +149,10 @@ namespace Flower.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customer.SingleOrDefaultAsync(m => m.CustomerID == id);
-            _context.Customer.Remove(customer);
+            var customer = await _context.GetById(id.ToString());
             try
             {
-                await _context.SaveChangesAsync();
+                _context.Delete(customer);
                 return RedirectToAction(nameof(Index));
             } catch (Exception e)
             {
@@ -164,9 +161,14 @@ namespace Flower.Controllers
             
         }
 
-        private bool CustomerExists(int id)
+        private async Task<bool> CustomerExists(int id)
         {
-            return _context.Customer.Any(e => e.CustomerID == id);
+            var customer = await _context.GetById(id.ToString());
+            if(customer == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
