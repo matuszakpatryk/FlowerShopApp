@@ -57,5 +57,33 @@ namespace FlowerShopAppTests
             var model = (IList<Product>)viewResult.Model;
             Assert.Empty(model);
         }
+
+        [Fact]
+        public async void ListCountShouldReturnProperValueAfterDelete()
+        {
+            // Arrange
+            var deletedItem = new Product();
+            var items = new List<Product>
+            {
+                deletedItem,
+                new Product(),
+                new Product()
+            };
+
+            var mockRepository = new Mock<IProductRepository>();
+            //mockRepository.Setup(x => x.GetAll()).ReturnsAsync(items);
+            mockRepository.Setup(x => x.GetById("0")).ReturnsAsync(deletedItem);
+            var controller = new ProductController(mockRepository.Object);
+
+            // Act
+            await controller.Create(deletedItem);
+            //await controller.DeleteConfirmed(0);
+            var result = await controller.Index();
+
+            // Assert
+            var viewResult = (ViewResult)result;
+            var model = (IList<Product>)viewResult.Model;
+            Assert.Equal(2, model.Count);
+        }
     }
 }
