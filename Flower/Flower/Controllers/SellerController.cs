@@ -8,15 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using Flower.Data;
 using Flower.Models;
 using Microsoft.AspNetCore.Authorization;
+using Flower.Data.Repository.Interfaces;
 
 namespace Flower.Controllers
 {
     [Authorize(Roles = "Admin, Employee")]
     public class SellerController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ISellerRepository _context;
 
-        public SellerController(ApplicationDbContext context)
+        public SellerController(ISellerRepository context)
         {
             _context = context;
         }
@@ -24,7 +25,7 @@ namespace Flower.Controllers
         // GET: Seller
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Seller.ToListAsync());
+            return View(await _context.GetAll());
         }
 
         // GET: Seller/Details/5
@@ -35,8 +36,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var seller = await _context.Seller
-                .SingleOrDefaultAsync(m => m.SellerID == id);
+            var seller = await _context.GetById(id.ToString());
             if (seller == null)
             {
                 return NotFound();
@@ -61,7 +61,6 @@ namespace Flower.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(seller);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(seller);
@@ -75,7 +74,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var seller = await _context.Seller.SingleOrDefaultAsync(m => m.SellerID == id);
+            var seller = await _context.GetById(id.ToString());
             if (seller == null)
             {
                 return NotFound();
@@ -100,11 +99,11 @@ namespace Flower.Controllers
                 try
                 {
                     _context.Update(seller);
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SellerExists(seller.SellerID))
+                    var temp = await SellerExists(seller.SellerID);
+                    if (!temp)
                     {
                         return NotFound();
                     }
@@ -126,8 +125,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var seller = await _context.Seller
-                .SingleOrDefaultAsync(m => m.SellerID == id);
+            var seller = await _context.GetById(id.ToString());
             if (seller == null)
             {
                 return NotFound();
@@ -141,11 +139,10 @@ namespace Flower.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var seller = await _context.Seller.SingleOrDefaultAsync(m => m.SellerID == id);
-            _context.Seller.Remove(seller);
+            var seller = await _context.GetById(id.ToString());
             try
             {
-                await _context.SaveChangesAsync();
+                _context.Delete(seller);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception e)
@@ -154,9 +151,14 @@ namespace Flower.Controllers
             }
         }
 
-        private bool SellerExists(int id)
+        private async Task<bool> SellerExists(int id)
         {
-            return _context.Seller.Any(e => e.SellerID == id);
+            var seller = await _context.GetById(id.ToString());
+            if(seller == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

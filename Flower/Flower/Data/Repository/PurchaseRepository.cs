@@ -16,6 +16,11 @@ namespace Flower.Data.Repository
             _dbContext = dbContext;
         }
 
+        public DbSet<Customer> Customer { get => _dbContext.Customer; set => throw new NotImplementedException(); }
+        public DbSet<Seller> Seller { get => _dbContext.Seller; set => throw new NotImplementedException(); }
+        public DbSet<Product> Product { get => _dbContext.Product; set => throw new NotImplementedException(); }
+        public DbSet<Purchase> Purchase { get => _dbContext.Purchase; set => throw new NotImplementedException(); }
+
         public void Add(Purchase purchase)
         {
             _dbContext.Add(purchase);

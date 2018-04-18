@@ -24,11 +24,8 @@ namespace Flower.Data
         }
 
         public DbSet<Flower.Models.Customer> Customer { get; set; }
-
         public DbSet<Flower.Models.Seller> Seller { get; set; }
-
         public DbSet<Flower.Models.Product> Product { get; set; }
-
         public DbSet<Flower.Models.Purchase> Purchase { get; set; }
     }
 }
