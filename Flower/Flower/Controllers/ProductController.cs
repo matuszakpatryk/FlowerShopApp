@@ -8,15 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using Flower.Data;
 using Flower.Models;
 using Microsoft.AspNetCore.Authorization;
+using Flower.Data.Repository.Interfaces;
 
 namespace Flower.Controllers
 {
     [AllowAnonymous]
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _context;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(IProductRepository context)
         {
             _context = context;
         }
@@ -24,7 +25,7 @@ namespace Flower.Controllers
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Product.ToListAsync());
+            return View(await _context.GetAll());
         }
 
         // GET: Product/Details/5
@@ -35,8 +36,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product
-                .SingleOrDefaultAsync(m => m.ProductID == id);
+            var product = await _context.GetById(id.ToString());
             if (product == null)
             {
                 return NotFound();
@@ -61,7 +61,6 @@ namespace Flower.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(product);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -75,7 +74,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product.SingleOrDefaultAsync(m => m.ProductID == id);
+            var product = await _context.GetById(id.ToString());
             if (product == null)
             {
                 return NotFound();
@@ -100,11 +99,11 @@ namespace Flower.Controllers
                 try
                 {
                     _context.Update(product);
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductID))
+                    bool temp = await ProductExists(product.ProductID);
+                    if (!temp)
                     {
                         return NotFound();
                     }
@@ -126,8 +125,7 @@ namespace Flower.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product
-                .SingleOrDefaultAsync(m => m.ProductID == id);
+            var product = await _context.GetById(id.ToString());
             if (product == null)
             {
                 return NotFound();
@@ -141,11 +139,10 @@ namespace Flower.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Product.SingleOrDefaultAsync(m => m.ProductID == id);
-            _context.Product.Remove(product);
+            var product = await _context.GetById(id.ToString());
             try
             {
-                await _context.SaveChangesAsync();
+                _context.Delete(product);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception e)
@@ -154,9 +151,14 @@ namespace Flower.Controllers
             }
         }
 
-        private bool ProductExists(int id)
+        private async Task<bool> ProductExists(int id)
         {
-            return _context.Product.Any(e => e.ProductID == id);
+            var product = await _context.GetById(id.ToString());
+            if (product == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -12,6 +12,8 @@ using Flower.Data;
 using Flower.Models;
 using Flower.Services;
 using Microsoft.AspNetCore.Localization;
+using Flower.Data.Repository.Interfaces;
+using Flower.Data.Repository;
 
 namespace Flower
 {
@@ -61,6 +63,8 @@ namespace Flower
                     });
 
             });
+
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddMvc();
         }
