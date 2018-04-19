@@ -100,16 +100,17 @@ namespace Flower.Controllers
                 {
                     _context.Update(product);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
                     bool temp = await ProductExists(product.ProductID);
                     if (!temp)
                     {
-                        return NotFound();
+                        throw new Exception();
+                        //return NotFound();
                     }
                     else
                     {
-                        throw;
+                        throw new Exception();
                     }
                 }
                 return RedirectToAction(nameof(Index));
