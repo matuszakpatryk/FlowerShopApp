@@ -33,7 +33,7 @@ namespace Flower.Data.Repository
 
         public async Task<Product> GetById(string Id)
         {
-            return await _dbContext.Product.FirstOrDefaultAsync(x => x.ProductID == Int64.Parse(Id));
+            return await _dbContext.Product.FirstAsync(x => x.ProductID == Int64.Parse(Id));
         }
 
         public void Update(Product product)

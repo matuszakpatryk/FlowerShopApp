@@ -105,12 +105,11 @@ namespace Flower.Controllers
                     bool temp = await ProductExists(product.ProductID);
                     if (!temp)
                     {
-                        throw new Exception();
-                        //return NotFound();
+                        return NotFound();
                     }
                     else
                     {
-                        throw new Exception();
+                        return NotFound();
                     }
                 }
                 return RedirectToAction(nameof(Index));

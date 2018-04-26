@@ -120,9 +120,22 @@ namespace FlowerShopAppTests
 
             //Assert
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => controller.Edit(thirdProduct.ProductID, thirdProduct));
-            //Product clientResult = await repositoryMock.GetById(product.ProductID.ToString());
-            //string result = clientResult.Name;
-            //Assert.Equal("Amarylis", result);
+        }
+
+        [Fact]
+        public async Task Edit_GiveDiffrentIdAndClientReturnNotFoundView()
+        {
+            Product client1 = new Product
+            {
+                ProductID = 1
+            };
+
+            var repositoryMock = new Mock<IProductRepository>();
+
+            var controller = new ProductController(repositoryMock.Object);
+            var result = controller.Edit(6);
+            var viewResult = await result as ViewResult;
+            Assert.Equal("Error", viewResult.ViewName);
         }
 
         [Fact]
