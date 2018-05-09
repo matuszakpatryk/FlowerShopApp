@@ -8,14 +8,14 @@
 @if (!SignInManager.IsSignedIn(User))
 {
     <center>
-        <h2>Welcome stranger!</h2>
+        <h2 id="WelcomeMessage">Welcome stranger!</h2>
         <p><b>Please log in, if you want access all features of my amazing app!</b></p>
     </center>
 }
 else
 {
     <center>
-        <h2>Hurra!</h2>
+        <h2 id="WelcomeMessage">Hurra!</h2>
         <p><b>Logged as @Model!</b></p>
         <p>Now you can enjoy using my amazing app!</p>
     </center>

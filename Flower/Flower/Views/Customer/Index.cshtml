@@ -21,7 +21,7 @@
     <div class="form-actions no-color">
         <p>
             Find: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-success btn-sm" />
+            <input type="submit" value="Search" class="btn btn-success btn-sm" id="SearchButton" />
             <a asp-action="Index" class="btn btn-success btn-sm">Back to Full List</a>
         </p>
     </div>
@@ -53,7 +53,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="CustomersTable">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -76,9 +76,9 @@
                    (await AuthorizationService.AuthorizeAsync(User, "Employee")).Succeeded)
                 {
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-success btn-sm">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.CustomerID" class="btn btn-success btn-sm">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-success btn-sm">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-success btn-sm" id="EditButton">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.CustomerID" class="btn btn-success btn-sm" id="DetailsButton">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-success btn-sm" id="DeleteButton">Delete</a>
                     </td>
                 }
 
