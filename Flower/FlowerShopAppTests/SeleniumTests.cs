@@ -40,6 +40,26 @@ namespace FlowerShopAppTests.Mocks
         }
 
         [Fact]
+        public void Check_LoginWithProperValues_ShouldLogin()
+        {
+            var email = "testtest@wp.pl";
+            var password = "Test123!";
+
+            Driver = new ChromeDriver(Directory.GetCurrentDirectory());
+            Driver.Navigate().GoToUrl("https://localhost:44336/");
+
+            Driver.FindElement(By.Id("LoginButton")).Click();
+            Driver.FindElement(By.Id("Email")).SendKeys(email);
+            Driver.FindElement(By.Id("Password")).SendKeys(password);
+            Driver.FindElement(By.Id("Login")).Click();
+
+            var message = Driver.FindElement(By.Id("WelcomeMessage")).Text;
+            Assert.Contains("Hurra!", message);
+
+            Driver.Close();
+        }
+
+        [Fact]
         public void Check_RegisterWithWrongPassowrd_ShouldReturnWarning()
         {
             string email = "OstatniUser@wp.pl";
@@ -75,26 +95,6 @@ namespace FlowerShopAppTests.Mocks
             var message = Driver.FindElement(By.Id("UserMessage")).Text;
 
             Assert.Contains(email, message);
-
-            Driver.Close();
-        }
-
-        [Fact]
-        public void Check_LoginWithProperValues_ShouldLogin()
-        {
-            var email = "testtest@wp.pl";
-            var password = "Test123!";
-
-            Driver = new ChromeDriver(Directory.GetCurrentDirectory());
-            Driver.Navigate().GoToUrl("https://localhost:44336/");
-
-            Driver.FindElement(By.Id("LoginButton")).Click();
-            Driver.FindElement(By.Id("Email")).SendKeys(email);
-            Driver.FindElement(By.Id("Password")).SendKeys(password);
-            Driver.FindElement(By.Id("Login")).Click();
-
-            var message = Driver.FindElement(By.Id("WelcomeMessage")).Text;
-            Assert.Contains("Hurra!", message);
 
             Driver.Close();
         }
